@@ -22,7 +22,26 @@ h1{
     border-bottom: 2px solid;
     margin: 5px;
     font-weight: bold;
+    max-width: 1000px;
 }
 .elementList{
     border-bottom: 1px solid rgba(0, 0, 0, 50%);
+    max-width: 1000px;
+}
+.container {
+    text-align: center;
+}
+#fetchButton{
+    border-radius: 10px;
+    background-color: rgb(206, 244, 231);
+    font-weight: bold;
+    display: inline-block;
+    padding: 10px;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+#spinner{
+    display: none;
+}
+.sectionSpiner{
+    margin: 15px;
 }

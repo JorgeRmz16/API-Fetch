@@ -7,6 +7,11 @@ const localStorageKey = "userData";
 const getCurrentDateTime = () => new Date().toISOString();
 
 const getUsers = () => {
+  const spinner = document.getElementById("spinner"); // Controlar spinner de carga
+  if (spinner) {
+    spinner.style.display = "block";
+  }
+
   const storedData = localStorage.getItem(localStorageKey);
 
   if (storedData) {
@@ -14,22 +19,29 @@ const getUsers = () => {
     const { data, timestamp } = JSON.parse(storedData);
     const currentTime = getCurrentDateTime();
 
-    const minutesElapsed = Math.floor(    // Diferencia en minutos
+    const minutesElapsed = Math.floor(
       (new Date(currentTime) - new Date(timestamp)) / (1000 * 60)
     );
 
     if (minutesElapsed <= 1) {
       console.log("Recuperando datos del local storage"); // Si ha pasado menos de 1 minuto, usar los datos almacenados
       imprimirEnDOM(data);
+      spinner.style.display = "none"; // Ocultar el spinner al cargar desde el almacenamiento local
       return;
     }
   }
 
-  // Si paso 1 minuto o no hay datos almacenados, realizar una nueva solicitud
+  // Si pasó 1 minuto o no hay datos almacenados, realizar una nueva solicitud
   fetch(urlUser)
     .then((response) => {
       console.log("status code: " + response.status);
       return response.json();
+    })
+    .finally(() => {
+      const spinner = document.getElementById("spinner");
+      if (spinner) {
+        spinner.style.display = "none"; // Ocultar el spinner al finalizar la solicitud
+      }
     })
     .then((users) => {
       console.log(users);
@@ -46,7 +58,7 @@ const getUsers = () => {
 
 function imprimirEnDOM(users) {
   const usersContainer = document.getElementById("users-container");
-  
+
   const tableHeader = `
       <div class="container text-center tableHead">
         <div class="row">
@@ -57,7 +69,7 @@ function imprimirEnDOM(users) {
         </div>
       </div>
     `;
-  
+
   const usersHTML = users.map(
     (user) => `
       <div class="container text-center elementList">
@@ -69,8 +81,9 @@ function imprimirEnDOM(users) {
         </div>
     </div>
       `
-    );
-    usersContainer.innerHTML = tableHeader + usersHTML.join("");;
+  );
+  usersContainer.innerHTML = tableHeader + usersHTML.join("");
 }
-getUsers();
 
+const fetchButton = document.getElementById("fetchButton");
+fetchButton.addEventListener("click", getUsers);
